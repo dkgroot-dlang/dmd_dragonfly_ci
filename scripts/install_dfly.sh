@@ -204,7 +204,7 @@ echo -e "\nPermitEmptyPasswords yes" >> /mnt/etc/ssh/sshd_config
 echo -e "\nSetting up pkg..."
 echo "________________________________________________________________________"
 mkdir -p /mnt/usr/local/etc/pkg/repos
-curl -s https://raw.githubusercontent.com/dkgroot/dmd_dragonflybsd/master/scripts/df-latest.conf -o /mnt/usr/local/etc/pkg/repos/df-latest.conf
+curl -s https://raw.githubusercontent.com/dkgroot/dmd_dragonfly_ci/master/scripts/df-latest.conf -o /mnt/usr/local/etc/pkg/repos/df-latest.conf
 cp /etc/resolv.conf /mnt/etc;
 chroot /mnt pkg upgrade -y
 
@@ -236,11 +236,11 @@ pw -V /mnt/etc usershow -n dmd
 
 echo -e "\nSetting up bash shell..."
 echo "________________________________________________________________________"
-curl -s https://raw.githubusercontent.com/dkgroot/dmd_dragonflybsd/master/scripts/inputrc -o /mnt/usr/local/etc/inputrc
-curl -s https://raw.githubusercontent.com/dkgroot/dmd_dragonflybsd/master/scripts/bash.bashrc -o /mnt/usr/local/etc/bash.bashrc
+curl -s https://raw.githubusercontent.com/dkgroot/dmd_dragonfly_ci/master/scripts/inputrc -o /mnt/usr/local/etc/inputrc
+curl -s https://raw.githubusercontent.com/dkgroot/dmd_dragonfly_ci/master/scripts/bash.bashrc -o /mnt/usr/local/etc/bash.bashrc
 cp /mnt/usr/local/etc/bash.bashrc /mnt/root/.bashrc
 cp /mnt/usr/local/etc/bash.bashrc /mnt/home/${username}/.bashrc
-curl -s https://raw.githubusercontent.com/dkgroot/dmd_dragonflybsd/master/scripts/profile -o /mnt/usr/local/etc/profile
+curl -s https://raw.githubusercontent.com/dkgroot/dmd_dragonfly_ci/master/scripts/profile -o /mnt/usr/local/etc/profile
 cp /mnt/usr/local/etc/profile /mnt/root/.profile
 cp /mnt/usr/local/etc/profile /mnt/home/${username}/.profile
 #chroot /mnt chsh -s /usr/local/bin/bash root

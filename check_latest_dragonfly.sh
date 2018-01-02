@@ -13,8 +13,6 @@ if [ -d $SEMAPHORE_CACHE_DIR ]; then
             ls -sl --block-size 1 image.img
             cp df_timestamp.txt prev_timestamp.txt;
             echo "DragonFly has been installed"
-            #pbzip2 -z image.img -c > image.img.bz2
-            #mv image.img ..
             rm DragonFly-x86_64-LATEST-ISO.iso
       }
       popd
