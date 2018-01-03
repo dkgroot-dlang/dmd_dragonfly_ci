@@ -22,7 +22,7 @@ if [ -d $SEMAPHORE_CACHE_DIR ]; then
             echo "DragonFly has been installed"
             rm DragonFly-x86_64-LATEST-ISO.iso
       else
-            echo "Latest version of DragonFly is already install, no need to reinstall"
+            echo "Latest version of DragonFly is already installed, no need to reinstall, using cached version"
       fi
       popd
 fi
