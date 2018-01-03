@@ -2,7 +2,7 @@
 if [ -d $SEMAPHORE_CACHE_DIR ]; then
       pushd $SEMAPHORE_CACHE_DIR
       curl -s http://ftp.tu-clausthal.de/pub/DragonFly/snapshots/df_timestamp.txt -o df_timestamp.txt
-      [ ! -f prev_timestamp.txt ] || [ ! -z "`diff df_timestamp.txt prev_timestamp.txt`" ] && {
+      if [ ! -f prev_timestamp.txt ] || [ ! -z "`diff df_timestamp.txt prev_timestamp.txt`" ]; then
             [ -f image.qcow ] && rm image.qcow
             sudo apt install -y python3-cairo python3-gi python3-gi-cairo python3-sqlalchemy python3-psutil python3-pip
             sudo pip3 install pexpect
@@ -14,6 +14,8 @@ if [ -d $SEMAPHORE_CACHE_DIR ]; then
             cp df_timestamp.txt prev_timestamp.txt;
             echo "DragonFly has been installed"
             rm DragonFly-x86_64-LATEST-ISO.iso
-      }
+      else
+            echo "Latest version of DragonFly is already install, no need to reinstall"
+      fi
       popd
 fi

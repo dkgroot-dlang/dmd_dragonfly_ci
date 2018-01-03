@@ -2,10 +2,15 @@
 
 # CI for D-lang dmd on DragonFly
 
-- bootstrap dmd using v2.068.1 on dragonfly
+- bootstrap dmd on dragonfly
+  - using v2.068.1 branch for dmd
+  - using dmd-cxx branch for druntime and phobos
+- publish bootstrap_dmd.tar.bz2
 - build dmd from master branch
 - build druntime from master branch
 - build phobos from master branch
-- run druntime/phobos unittests
-- run dmd tests
-
+- run druntime unittests
+- run phobos unittests
+- run dmd unittests
+- run dmd integration tests
+- publish master_dmd.tar.bz2

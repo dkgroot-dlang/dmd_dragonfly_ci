@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
+#echo "Copying image file..."
+#[ -f image.img ] || pbzip2 -d $SEMAPHORE_CACHE_DIR/image.img.bz2 -c >image.img
 echo "Starting DragonFly..."
+#lscpu
 sudo qemu-system-x86_64 \
     -smp 4,sockets=1,cores=4,threads=2,maxcpus=4 \
     -enable-kvm \
@@ -14,5 +17,6 @@ echo "Waiting for DragonFly to finish booting..."
 sleep 70
 if [ ! `pidof qemu-system-x86_64` ]; then echo "qemu failed to start"; exit 1; fi
 ssh-keyscan -p10022 -H localhost >> ~/.ssh/known_hosts 2>/dev/null
-./runssh 'curl -s https://raw.githubusercontent.com/dkgroot/dmd_dragonfly_ci/master/scripts/dmd.mk -o dmd.mk'
+./runssh 'curl -s https://raw.githubusercontent.com/dkgroot/dmd_dragonfly_ci/master/scripts/bootstrap.mk -o bootstrap.mk'
+./runssh 'curl -s https://raw.githubusercontent.com/dkgroot/dmd_dragonfly_ci/master/scripts/master.mk -o master.mk'
 echo "DragonFly Started..."
