@@ -1,4 +1,9 @@
 #!/usr/bin/env python3
+#
+# Python Pexpect Script, to remote control the DragonFly OS Installation inside a VM via the serial console
+#
+# Created by: Diederik de Groot (2018)
+
 import sys
 import pexpect
 import time

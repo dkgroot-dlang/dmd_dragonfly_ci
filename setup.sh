@@ -1,4 +1,10 @@
 #!/usr/bin/env bash
+#
+# Start DragonFly in a kvm accelated VM
+# Push required scripts to DragonFly VM
+#
+# Created by: Diederik de Groot (2018)
+
 echo "Starting DragonFly..."
 sudo qemu-system-x86_64 \
     -smp 4,sockets=1,cores=4,threads=2,maxcpus=4 \
@@ -14,7 +20,10 @@ echo "Waiting for DragonFly to finish booting..."
 sleep 50
 if [ ! `pidof qemu-system-x86_64` ]; then echo "qemu failed to start"; exit 1; fi
 ssh-keyscan -p10022 -H localhost >> ~/.ssh/known_hosts 2>/dev/null
-ssh root@localhost -p 10022  -o ConnectTimeout=5 'curl -s https://raw.githubusercontent.com/dkgroot/dmd_dragonflybsd/master/scripts/execute_return_exitcode.sh -o execute_return_exitcode.sh && chmod a+x execute_return_exitcode.sh'
-./runssh 'curl -s https://raw.githubusercontent.com/dkgroot/dmd_dragonfly_ci/master/scripts/bootstrap.mk -o bootstrap.mk'
-./runssh 'curl -s https://raw.githubusercontent.com/dkgroot/dmd_dragonfly_ci/master/scripts/master.mk -o master.mk'
+#ssh root@localhost -p 10022  -o ConnectTimeout=5 'curl -s https://raw.githubusercontent.com/dkgroot/dmd_dragonflybsd/master/scripts/execute_return_exitcode.sh -o execute_return_exitcode.sh && chmod a+x execute_return_exitcode.sh'
+#./runssh 'curl -s https://raw.githubusercontent.com/dkgroot/dmd_dragonfly_ci/master/scripts/bootstrap.mk -o bootstrap.mk'
+#./runssh 'curl -s https://raw.githubusercontent.com/dkgroot/dmd_dragonfly_ci/master/scripts/master.mk -o master.mk'
+scp -P 10022 scripts/execute_return_exitcode.sh root@localhost:/root/
+scp -P 10022 scripts/bootstrap.mk root@localhost:/root/
+scp -P 10022 scripts/master.mk root@localhost:/root/
 echo "DragonFly Started..."

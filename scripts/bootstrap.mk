@@ -1,3 +1,6 @@
+# Build DMD Bootrap
+# Created by: Diederik de Groot (2018)
+
 GIT:=git
 GITUSER:=dkgroot
 QUIET:=

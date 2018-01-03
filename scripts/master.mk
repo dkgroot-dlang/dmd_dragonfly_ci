@@ -1,3 +1,6 @@
+# Build DMD Master
+# Created by: Diederik de Groot (2018)
+
 GIT:=git
 GITUSER:=dkgroot
 QUIET:=

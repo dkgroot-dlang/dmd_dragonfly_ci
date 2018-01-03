@@ -1,5 +1,11 @@
 #!/bin/sh
-# Taken from : https://github.com/DragonFlyBSD/DragonFlyBSD/blob/master/nrelease/root/README
+#
+# Automatically setup dragonfly os with simple defaults
+# 
+# Free after : https://github.com/DragonFlyBSD/DragonFlyBSD/blob/master/nrelease/root/README
+#
+# Created by: Diederik de Groot (2018)
+
 disk=da0
 rootdev=da0s1a
 swapdev=da0s1b

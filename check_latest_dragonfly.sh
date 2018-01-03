@@ -1,4 +1,11 @@
 #!/usr/bin/env bash
+#
+# if the cache contains the latest dragonfly timestamp and the vm has already been build, then use it
+# otherwise download the latest iso, create an image fs and setup a complete dragonfly OS in a kvm accelerated vmm
+# the installation of the os is controlled via a python-pexpect script
+#
+# Created by: Diederik de Groot (2018)
+
 if [ -d $SEMAPHORE_CACHE_DIR ]; then
       pushd $SEMAPHORE_CACHE_DIR
       curl -s http://ftp.tu-clausthal.de/pub/DragonFly/snapshots/df_timestamp.txt -o df_timestamp.txt
