@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 #
 # Start DragonFly in a kvm accelated VM
+# Note: using a temporary snapshot (on top of the image.img). All changes
+#       made during the dmd build process are discarded when qemu is finished.
 # Push required scripts to DragonFly VM
 #
 # Created by: Diederik de Groot (2018)
