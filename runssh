@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
-echo "Executing '$@' on root@localhost -p 10022..."
-res=$(
-    command -p ssh root@localhost -p 10022 "$@" \; echo -n 'SSH_REMOTE_EXIT_CODE=$?'
-    ) || exit $?
+ssh root@localhost -p 10022  -o ConnectTimeout=5 "./execute_return_exitcode.sh '$@'" | tee output.log | grep -v SSH_REMOTE_EXIT_CODE=
+exit_code=$?
+if [ $exit_code != 0 ]; then
+    exit $exit_code
+fi
+res=`tail -n1 output.log`
 exit_code="${res##*SSH_REMOTE_EXIT_CODE=}"
 if [[ ! -n "$exit_code" ]]; then
     exit_code=127
 fi
-res="${res%%SSH_REMOTE_EXIT_CODE*}"
-echo -n "$res"
 exit $exit_code
