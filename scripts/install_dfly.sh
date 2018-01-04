@@ -230,15 +230,14 @@ echo "________________________________________________________________________"
 #echo "$password" | pw -V /mnt/etc useradd -n $username -h 0 -s /usr/local/bin/bash -G wheel -d /home/$username -c "$fullname"
 #chroot /mnt pw -V /mnt/etc useradd -n $username -s /usr/local/bin/bash -G wheel -d /home/$username -c "$fullname"                # NO password set to allow passwordless login via ssh (dmd)
 #echo "$rootpassword" | pw -V /mnt/etc usermod -n root -h 0 -s /usr/local/bin/bash
-ln -s /mnt/usr/local/bin/bash /usr/local/bin/bash
-mkdir /mnt/home/${usename}
+mkdir /mnt/home/${username}
 pw -V /mnt/etc useradd -n ${username} -d /home/${username} -G wheel -s /usr/local/bin/bash -c "${fullname}" -m -w none
 #echo "$rootpassword" | pw -V /mnt/etc usermod -n root -h 0 -s /usr/local/bin/bash
 pw -V /mnt/etc usermod -n root -s /usr/local/bin/bash
 chown 1001:1001 /mnt/home/${username};
 
-pw -V /mnt/etc usershow -n root
-pw -V /mnt/etc usershow -n dmd
+#pw -V /mnt/etc usershow -n root
+#pw -V /mnt/etc usershow -n dmd
 
 echo -e "\nSetting up bash shell..."
 echo "________________________________________________________________________"
