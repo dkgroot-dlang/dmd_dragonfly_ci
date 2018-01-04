@@ -20,7 +20,7 @@ clone_master:
 	$(GIT) -C master clone https://github.com/${GITUSER}/druntime.git
 	cd master/druntime; $(GIT) checkout -b unittest;
 	cd master/druntime; $(GIT) pull origin dragonflybsd-master dragonfly-core.sys.posix dragonfly-core.sys.dragonflybsd --commit -q --squash;
-	$(GIT) -C master clone -b dragonflybsd-master https://github.com/${GITUSER}/phobos.git
+	$(GIT) -C master clone https://github.com/dlang/phobos.git
 	touch $@
 	
 build_dmd: clone_master
