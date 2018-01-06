@@ -8,7 +8,7 @@ QUIET:=
 BUILD:=debug
 MODEL:=64
 NCPU:=4
-BUILD_BASEIDR:=$(shell pwd)
+BUILD_BASEDIR:=$(shell pwd)
 BOOTSTRAP_DMD:=$(shell pwd)/bootstrap/install/dragonflybsd/bin64/dmd
 INSTALL_DIR:=$(shell pwd)/master/install
 
@@ -94,7 +94,7 @@ clone_dub:
 	touch $@
 
 build_dub: clone_dub build_dmd_release
-	cd master/dub; DMD=$(BUILD_BASEDIR)/root/master/install/dragonflybsd/bin64/dmd ./build.sh
+	cd master/dub; DMD=$(BUILD_BASEDIR)/master/install/dragonflybsd/bin64/dmd ./build.sh
 	touch $@
 
 run_dub_test: build_dub
