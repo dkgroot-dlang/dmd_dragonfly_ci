@@ -87,11 +87,12 @@ clone_tools:
 	touch $@
 
 patch_tools: clone_tools
-	$(CURL) -s https://raw.githubusercontent.com/dkgroot/dragonflybsd_dmd_port/master/patches/tools.patch -o tools.patch
-	$(GIT) -C master/tools apply --reject /root/tools.patch
+	#$(CURL) -s https://raw.githubusercontent.com/dkgroot/dragonflybsd_dmd_port/master/patches/tools.patch -o tools.patch
+	#$(GIT) -C master/tools apply --reject /root/tools.patch
+	$(CURL) -s https://raw.githubusercontent.com/dkgroot/dragonflybsd_dmd_port/master/patches/tools_posix.mak -o /root/master/tools/posix.mak
 	touch $@
 
-build_tools: patch_tools
+build_tools: patch_tools build_dmd_release
 	$(MAKE) -C master/tools -f posix.mak BUILD=debug MODEL=$(MODEL) QUIET=$(QUIET) -j$(NCPU)
 
 clone_dub:
