@@ -84,7 +84,7 @@ clone_tools:
 
 patch_tools: clone_tools
 	$(CURL) -s https://raw.githubusercontent.com/dkgroot/dragonflybsd_dmd_port/master/patches/tools.patch -o tools.patch
-	$(GIT) -C master/tools apply --reject tools.patch
+	$(GIT) -C master/tools apply --reject /root/tools.patch
 	touch $@
 
 build_tools: patch_tools
@@ -96,7 +96,7 @@ clone_dub:
 
 patch_dub: clone_dub
 	$(CURL) -s https://raw.githubusercontent.com/dkgroot/dragonflybsd_dmd_port/master/patches/dub.patch -o dub.patch
-	$(GIT) -C master/dub apply --reject dub.patch
+	$(GIT) -C master/dub apply --reject /root/dub.patch
 	touch $@
 
 build_dub: patch_dub
