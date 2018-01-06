@@ -86,14 +86,14 @@ clone_tools:
 	$(GIT) -C master clone https://github.com/${GITUSER}/tools.git
 	touch $@
 
-build_tools: build_dmd_release
+build_tools: clone_tools build_dmd_release
 	$(MAKE) -C master/tools -f posix.mak BUILD=debug MODEL=$(MODEL) QUIET=$(QUIET) -j$(NCPU)
 
 clone_dub:
 	$(GIT) -C master clone https://github.com/${GITUSER}/dub.git
 	touch $@
 
-build_dub: build_dmd_release
+build_dub: clone_dub build_dmd_release
 	cd master/dub; DMD=$(BUILD_BASEDIR)/root/master/install/dragonflybsd/bin64/dmd ./build.sh
 	touch $@
 
