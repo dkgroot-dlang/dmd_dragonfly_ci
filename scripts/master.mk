@@ -30,7 +30,7 @@ build_dmd: clone_master
 	$(MAKE) -C master/dmd -f posix.mak BUILD=$(BUILD) MODEL=$(MODEL) QUIET=$(QUIET) HOST_CSS=g++ HOST_DMD=$(BOOTSTRAP_DMD) INSTALL_DIR=$(INSTALL_DIR) install
 	touch $@
 
-build_release: clone_master
+build_dmd_release: clone_master
 	$(MAKE) -C master/dmd -f posix.mak BUILD=release MODEL=$(MODEL) QUIET=$(QUIET) HOST_CSS=g++ HOST_DMD=$(BOOTSTRAP_DMD) -j$(NCPU) all
 	touch $@
 
@@ -44,7 +44,7 @@ build_phobos: clone_master
 	$(MAKE) -C master/phobos -f posix.mak BUILD=$(BUILD) MODEL=$(MODEL) QUIET=$(QUIET) INSTALL_DIR=$(INSTALL_DIR) install
 	touch $@
 
-build_master: build_dmd build_druntime build_phobos build_release
+build_master: build_dmd build_druntime build_phobos build_dmd_release
 
 test_druntime: build_druntime
 	sysctl kern.coredump=0; $(MAKE) -C master/druntime -f posix.mak BUILD=$(BUILD) MODEL=$(MODEL) QUIET=$(QUIET) -j$(NCPU) unittest
@@ -53,7 +53,7 @@ test_phobos: build_phobos
 	#$(MAKE) -C master/phobos -f posix.mak BUILD=$(BUILD) MODEL=$(MODEL) QUIET=$(QUIET) -j$(NCPU) unittest
 	$(MAKE) -C master/phobos -f posix.mak BUILD=$(BUILD) MODEL=$(MODEL) QUIET=$(QUIET) unittest
 
-test_dmd: build_release
+test_dmd: build_dmd_release
 	$(MAKE) -C master/dmd/src -f posix.mak BUILD=release MODEL=$(MODEL) QUIET=$(QUIET) HOST_DMD=$(BOOTSTRAP_DMD) -j$(NCPU) build-examples
 	$(MAKE) -C master/dmd/src -f posix.mak BUILD=release MODEL=$(MODEL) QUIET=$(QUIET) HOST_DMD=$(BOOTSTRAP_DMD) -j$(NCPU) unittest
 
@@ -91,7 +91,7 @@ patch_tools: clone_tools
 	$(GIT) -C master/tools apply --reject /root/tools.patch
 	touch $@
 
-build_tools: patch_tools build_release
+build_tools: patch_tools build_dmd_release
 	$(MAKE) -C master/tools -f posix.mak BUILD=release MODEL=$(MODEL) QUIET=$(QUIET)
 
 clone_dub:
@@ -103,7 +103,7 @@ patch_dub: clone_dub
 	$(GIT) -C master/dub apply --reject /root/dub.patch
 	touch $@
 
-build_dub: patch_dub
+build_dub: patch_dub build_dmd_release
 	cd master/dub; DMD=$(BUILD_BASEDIR)/root/master/install/dragonflybsd/bin64/dmd ./build.sh
 	touch $@
 
