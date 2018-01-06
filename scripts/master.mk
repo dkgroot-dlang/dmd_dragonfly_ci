@@ -91,8 +91,8 @@ patch_tools: clone_tools
 	$(GIT) -C master/tools apply --reject /root/tools.patch
 	touch $@
 
-build_tools: patch_tools build_dmd_release
-	$(MAKE) -C master/tools -f posix.mak BUILD=release MODEL=$(MODEL) QUIET=$(QUIET)
+build_tools: patch_tools
+	$(MAKE) -C master/tools -f posix.mak BUILD=debug MODEL=$(MODEL) QUIET=$(QUIET) -j$(NCPU)
 
 clone_dub:
 	$(GIT) -C master clone https://github.com/${GITUSER}/dub.git
