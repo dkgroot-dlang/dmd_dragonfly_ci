@@ -1,12 +1,14 @@
 # Build DMD Master
 # Created by: Diederik de Groot (2018)
 
-GIT:=git
+GIT:=/usr/local/bin/git
+CURL:=/usr/local/bin/curl
 GITUSER:=dkgroot
 QUIET:=
 BUILD:=debug
 MODEL:=64
 NCPU:=4
+BUILD_BASEIDR:=$(shell pwd)
 BOOTSTRAP_DMD:=$(shell pwd)/bootstrap/install/dragonflybsd/bin64/dmd
 INSTALL_DIR:=$(shell pwd)/master/install
 
@@ -76,4 +78,30 @@ master_restore: master_dmd.tar.bz2
 master: master_dmd.tar.bz2
 	[ -d master/install ] || $(MAKE) -f $(MAKEFILE) master_restore;
 
-	
+clone_tools:
+	$(GIT) -c master clone https://github.com/${GITUSER}/tools.git
+	touch $@
+
+patch_tools: clone_tools
+	$(CURL) -s https://raw.githubusercontent.com/dkgroot/dragonflybsd_dmd_port/master/patches/tools.patch -o tools.patch
+	$(GIT) -c master/tools apply --reject tools.patch
+	touch $@
+
+build_tools: patch_tools
+	$(MAKE) -c master/tools -f posix.mak BUILD=release MODEL=$(MODEL) QUIET=$(QUIET)
+
+clone_dub:
+	$(GIT) -c master clone https://github.com/${GITUSER}/dub.git
+	touch $@
+
+patch_dub: clone_dub
+	$(CURL) -s https://raw.githubusercontent.com/dkgroot/dragonflybsd_dmd_port/master/patches/dub.patch -o dub.patch
+	$(GIT) -c master/dub apply --reject dub.patch
+	touch $@
+
+build_dub: patch_dub
+	cd master/dub; DMD=$(BUILD_BASEDIR)/root/master/install/dragonflybsd/bin64/dmd ./build.sh
+	touch $@
+
+run_dub_test: build_dub
+	cd master/dub; DUB=$(BUILD_BASEDIR)/master/dub/bin/dub DC=$(BUILD_BASEDIR)/master/install/dragonflybsd/bin64/dmd test/run-unittest.sh
