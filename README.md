@@ -13,5 +13,6 @@
 - run phobos unittests
 - run dmd unittests
 - run dmd integration tests
-- publish master_dmd.tar.bz2
-
+- build tools
+- build dub
+#- publish master_dmd.tar.bz2
