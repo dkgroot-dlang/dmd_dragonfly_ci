@@ -5,6 +5,8 @@
 # Free after : https://github.com/DragonFlyBSD/DragonFlyBSD/blob/master/nrelease/root/README
 #
 # Created by: Diederik de Groot (2018)
+#set -uexo pipefail
+set -ux
 
 disk=da0
 rootdev=da0s1a
@@ -28,7 +30,7 @@ echo "________________________________________________________________________"
 dd if=/dev/zero of=/dev/${disk} bs=32k count=16
 echo -e "\nPartitioning Disk..."
 echo "________________________________________________________________________"
-fdisk -IB ${disk}
+fdisk -IB ${disk} >/dev/null 2>/dev/null
 
 # If you didn't zero the disk as above, but have a spare slice
 # whose partition type you want to change to DragonFly, use fdisk(8).
@@ -52,8 +54,7 @@ boot0cfg -v ${disk}
 # dd if=/dev/zero of=/dev/da0s1 bs=32k count=16
 echo -e "\nCreating disklabel..."
 echo "________________________________________________________________________"
-#disklabel -B -r -w da0s1 auto 2>/dev/null
-disklabel64 -r -w ${disk}s1 auto
+disklabel64 -w ${disk}s1 auto
 disklabel64 -B ${disk}s1
 
 # Edit the label.  Create various standard partitions.  The typical
@@ -74,11 +75,10 @@ disklabel64 -B ${disk}s1
 #	da0s1d	*		All remaining space to your /; HAMMER
 #
 # An example disklabel can be found in /etc/disklabel.da0s1.
-#
 disklabel64 ${disk}s1 > /tmp/label
 cat << EOF >> /tmp/label
   a:     *       0       4.2BSD
-  b:     768m    *       swap
+  b:     1500m   *       swap
 EOF
 disklabel -R ${disk}s1 /tmp/label
 
@@ -110,11 +110,6 @@ mount /dev/${rootdev} /mnt
 # CD itself, and /etc.hdd contains those for booting off a
 # hard disk.  So it's the latter that you want to copy to /mnt/etc.
 #
-#cpdup -v -u -x / /mnt
-##cpdup /boot /mnt/boot
-#cpdup -v -u -x /var /mnt/var
-#cpdup -v -u -x /etc.hdd /mnt/etc
-#cpdup -v -u -x /usr /mnt/usr
 echo -e "\nCopying root directory to /mnt... (standby this takes a while)"
 echo "________________________________________________________________________"
 cpdup -x -v / /mnt  | while read line; do COUNT=$(( COUNT+1 ));if test $COUNT -eq 100 ; then echo -n .; COUNT=0;fi;done
@@ -146,8 +141,6 @@ ln -s /tmp /mnt/var/tmp
 # file based on the above parameters exists as /mnt/etc/fstab.example
 # which you can rename to /mnt/etc/fstab.
 #
-#cp /etc/fstab.example /mnt/etc/fstab
-#vi /mnt/etc/fstab
 echo -e "\nCreating /etc/fstab file..."
 echo "________________________________________________________________________"
 cat <<EOF > /mnt/etc/fstab
@@ -176,7 +169,6 @@ rm /mnt/boot/loader.conf
 rm /mnt/boot.catalog
 rm -R /mnt/README* /mnt/autorun* /mnt/index.html /mnt/dflybsd.ico /mnt/etc.hdd;
 
-#touch /mnt/boot/loader.conf
 echo -e "\nSetting up boot loader..."
 echo "________________________________________________________________________"
 cat <<EOF > /mnt/boot/loader.conf
@@ -204,54 +196,42 @@ EOF
 echo -e "\nSetting up sshd..."
 echo "________________________________________________________________________"
 sed -i -e 's/PasswordAuthentication.*/PasswordAuthentication yes/' /mnt/etc/ssh/sshd_config;
+sed -i -e 's/PermitRootLogin.*/PermitRootLogin yes/' /mnt/etc/ssh/sshd_config;
+sed -i -e 's/PermitEmptyPasswords.*/PermitEmptyPasswords yes/' /mnt/etc/ssh/sshd_config;
 echo -e "\nPermitRootLogin yes" >> /mnt/etc/ssh/sshd_config
 echo -e "\nPermitEmptyPasswords yes" >> /mnt/etc/ssh/sshd_config
 
 echo -e "\nSetting up pkg..."
 echo "________________________________________________________________________"
 mkdir -p /mnt/usr/local/etc/pkg/repos
-curl -s https://raw.githubusercontent.com/dkgroot/dmd_dragonfly_ci/master/scripts/df-latest.conf -o /mnt/usr/local/etc/pkg/repos/df-latest.conf
+curl -s https://raw.githubusercontent.com/dkgroot-ldc/ldc_dragonfly_ci/master/scripts/df-latest.conf -o /mnt/usr/local/etc/pkg/repos/df-latest.conf
 cp /etc/resolv.conf /mnt/etc;
 chroot /mnt pkg upgrade -y
 
-echo -e "\nSetting up sudo..."
-echo "________________________________________________________________________"
-chroot /mnt pkg install -y sudo
-sed -i -e 's/.*%wheel ALL=(ALL) NOPASSWD: ALL/%wheel ALL=(ALL) NOPASSWD: ALL/' /mnt/usr/local/etc/sudoers;
-
 echo -e "\nInstalling packages..."
 echo "________________________________________________________________________"
-#chroot /mnt pkg install -y joe gcc6 gmake bash gettext clang50 gnupg htop ncurses autoconf automake pkgconf screen  
-#chroot /mnt pkg install -y gcc6 gmake bash gettext llvm38 clang38 cmake ninja
-chroot /mnt pkg install -y gcc6 gmake bash gettext
+#chroot /mnt pkg install -y gmake bash gettext llvm38 clang38 cmake ninja libconfig sudo
+chroot /mnt pkg install -y gcc6 gmake bash gettext sudo
+
+echo -e "\nSetting up sudo..."
+echo "________________________________________________________________________"
+sed -i -e 's/.*%wheel ALL=(ALL) NOPASSWD: ALL/%wheel ALL=(ALL) NOPASSWD: ALL/' /mnt/usr/local/etc/sudoers;
 
 echo -e "\nSetting up user "${username}"..."
 echo "________________________________________________________________________"
-#echo "$password" | pw -V /mnt/etc useradd -n $username -h 0 -s /usr/local/bin/bash -G wheel -d /home/$username -c "$fullname"
-#chroot /mnt pw -V /mnt/etc useradd -n $username -s /usr/local/bin/bash -G wheel -d /home/$username -c "$fullname"                # NO password set to allow passwordless login via ssh (dmd)
-#echo "$rootpassword" | pw -V /mnt/etc usermod -n root -h 0 -s /usr/local/bin/bash
-mkdir /mnt/home/${username}
-pw -V /mnt/etc useradd -n ${username} -d /home/${username} -G wheel -s /usr/local/bin/bash -c "${fullname}" -m -w none
-#echo "$rootpassword" | pw -V /mnt/etc usermod -n root -h 0 -s /usr/local/bin/bash
-pw -V /mnt/etc usermod -n root -s /usr/local/bin/bash
+chroot /mnt pw useradd -n ${username} -d /home/${username} -G wheel -s /usr/local/bin/bash -c "${fullname}" -m -w none
+chroot /mnt pw usermod -n root -s /usr/local/bin/bash
 chown 1001:1001 /mnt/home/${username};
-
-#pw -V /mnt/etc usershow -n root
-#pw -V /mnt/etc usershow -n dmd
 
 echo -e "\nSetting up bash shell..."
 echo "________________________________________________________________________"
-curl -s https://raw.githubusercontent.com/dkgroot/dmd_dragonfly_ci/master/scripts/inputrc -o /mnt/usr/local/etc/inputrc
-curl -s https://raw.githubusercontent.com/dkgroot/dmd_dragonfly_ci/master/scripts/bash.bashrc -o /mnt/usr/local/etc/bash.bashrc
+curl -s https://raw.githubusercontent.com/dkgroot-ldc/ldc_dragonfly_ci/master/scripts/inputrc -o /mnt/usr/local/etc/inputrc
+curl -s https://raw.githubusercontent.com/dkgroot-ldc/ldc_dragonfly_ci/master/scripts/bash.bashrc -o /mnt/usr/local/etc/bash.bashrc
 cp /mnt/usr/local/etc/bash.bashrc /mnt/root/.bashrc
 cp /mnt/usr/local/etc/bash.bashrc /mnt/home/${username}/.bashrc
-curl -s https://raw.githubusercontent.com/dkgroot/dmd_dragonfly_ci/master/scripts/profile -o /mnt/usr/local/etc/profile
+curl -s https://raw.githubusercontent.com/dkgroot-ldc/ldc_dragonfly_ci/master/scripts/profile -o /mnt/usr/local/etc/profile
 cp /mnt/usr/local/etc/profile /mnt/root/.profile
 cp /mnt/usr/local/etc/profile /mnt/home/${username}/.profile
-#chroot /mnt chsh -s /usr/local/bin/bash root
-#chroot /mnt chsh -s /usr/local/bin/bash ${username}
-#chroot /mnt ssh-keygen -q -t rsa -N "" -f /root/.ssh/id_rsa
-#chroot /mnt ssh-keygen -q -t rsa -N "" -f /home/${username}/.ssh/id_rsa
 chroot /mnt pkg clean -y
 
 echo -e "\nDragonFlyBSD installed... time to reboot."
