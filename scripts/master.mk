@@ -10,7 +10,7 @@ MODEL:=64
 NCPU:=4
 BUILD_BASEDIR:=$(shell pwd)
 BOOTSTRAP_DMD:=$(shell pwd)/bootstrap/install/dragonflybsd/bin64/dmd
-INSTALL_DIR:=$(shell pwd)/master/install
+INSTALL_DIR:=/usr/local/dmd
 
 .PHONY: all
 
@@ -27,24 +27,24 @@ clone_master:
 	
 build_dmd: clone_master
 	$(MAKE) -C master/dmd -f posix.mak BUILD=$(BUILD) MODEL=$(MODEL) QUIET=$(QUIET) HOST_CSS=g++ HOST_DMD=$(BOOTSTRAP_DMD) -j$(NCPU) all
-	$(MAKE) -C master/dmd -f posix.mak BUILD=$(BUILD) MODEL=$(MODEL) QUIET=$(QUIET) HOST_CSS=g++ HOST_DMD=$(BOOTSTRAP_DMD) INSTALL_DIR=$(INSTALL_DIR) install
-	touch $@
-
-build_dmd_release: clone_master
-	$(MAKE) -C master/dmd -f posix.mak BUILD=release MODEL=$(MODEL) QUIET=$(QUIET) HOST_CSS=g++ HOST_DMD=$(BOOTSTRAP_DMD) -j$(NCPU) all
+	$(MAKE) -C master/dmd -f posix.mak BUILD=$(BUILD) MODEL=release QUIET=$(QUIET) HOST_CSS=g++ HOST_DMD=$(BOOTSTRAP_DMD) INSTALL_DIR=$(INSTALL_DIR) install
+	ln -s $(INSTALL_DIR)/dragonflybsd/bin64/dmd /usr/local/bin/dmd
+	ln -s $(INSTALL_DIR)/dragonflybsd/bin64/dmd.conf /usr/local/etc/dmd.conf
 	touch $@
 
 build_druntime: clone_master
 	$(MAKE) -C master/druntime -f posix.mak BUILD=$(BUILD) MODEL=$(MODEL) QUIET=$(QUIET) -j$(NCPU) 
-	$(MAKE) -C master/druntime -f posix.mak BUILD=$(BUILD) MODEL=$(MODEL) QUIET=$(QUIET) INSTALL_DIR=$(INSTALL_DIR) install
+	$(MAKE) -C master/druntime -f posix.mak BUILD=release MODEL=$(MODEL) QUIET=$(QUIET) INSTALL_DIR=$(INSTALL_DIR) install
 	touch $@
 
 build_phobos: clone_master
 	$(MAKE) -C master/phobos -f posix.mak BUILD=$(BUILD) MODEL=$(MODEL) QUIET=$(QUIET) -j$(NCPU)
-	$(MAKE) -C master/phobos -f posix.mak BUILD=$(BUILD) MODEL=$(MODEL) QUIET=$(QUIET) INSTALL_DIR=$(INSTALL_DIR) install
+	$(MAKE) -C master/phobos -f posix.mak BUILD=release MODEL=$(MODEL) QUIET=$(QUIET) INSTALL_DIR=$(INSTALL_DIR) install
 	touch $@
 
-build_master: build_dmd build_druntime build_phobos build_dmd_release
+build_phobos_release: build_phobos
+
+build_master: build_dmd build_druntime build_phobos
 
 test_druntime: build_druntime
 	sysctl kern.coredump=0; $(MAKE) -C master/druntime -f posix.mak BUILD=$(BUILD) MODEL=$(MODEL) QUIET=$(QUIET) -j$(NCPU) unittest
@@ -53,7 +53,7 @@ test_phobos: build_phobos
 	#$(MAKE) -C master/phobos -f posix.mak BUILD=$(BUILD) MODEL=$(MODEL) QUIET=$(QUIET) -j$(NCPU) unittest
 	$(MAKE) -C master/phobos -f posix.mak BUILD=$(BUILD) MODEL=$(MODEL) QUIET=$(QUIET) unittest
 
-test_dmd: build_dmd_release
+test_dmd:
 	$(MAKE) -C master/dmd/src -f posix.mak BUILD=release MODEL=$(MODEL) QUIET=$(QUIET) HOST_DMD=$(BOOTSTRAP_DMD) -j$(NCPU) build-examples
 	$(MAKE) -C master/dmd/src -f posix.mak BUILD=release MODEL=$(MODEL) QUIET=$(QUIET) HOST_DMD=$(BOOTSTRAP_DMD) -j$(NCPU) unittest
 
@@ -86,16 +86,17 @@ clone_tools:
 	$(GIT) -C master clone https://github.com/${GITUSER}/tools.git
 	touch $@
 
-build_tools: clone_tools build_dmd_release
+build_tools: clone_tools
 	$(MAKE) -C master/tools -f posix.mak BUILD=debug MODEL=$(MODEL) QUIET=$(QUIET) -j$(NCPU)
 
 clone_dub:
-	$(GIT) -C master clone https://github.com/${GITUSER}/dub.git
+	$(GIT) -C master clone https://github.com/dkgroot-dlang/dub.git
 	touch $@
 
-build_dub: clone_dub build_dmd_release
-	cd master/dub; DMD=$(BUILD_BASEDIR)/master/install/dragonflybsd/bin64/dmd ./build.sh
+build_dub: clone_dub build_dmd
+	cd master/dub; DMD=$(INSTALL_DIR)/dragonflybsd/bin64/dmd ./build.sh
+	ln -s /root/master/dub/bin/dub /usr/local/bin/dub
 	touch $@
 
 run_dub_test: build_dub
-	cd master/dub; DUB=$(BUILD_BASEDIR)/master/dub/bin/dub DC=$(BUILD_BASEDIR)/master/install/dragonflybsd/bin64/dmd test/run-unittest.sh
+	cd master/dub; DUB=/usr/local/bin/dub DC=$(INSTALL_DIR)/dragonflybsd/bin64/dmd test/run-unittest.sh
