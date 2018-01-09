@@ -27,7 +27,7 @@ clone_master:
 	
 build_dmd: clone_master
 	$(MAKE) -C master/dmd -f posix.mak BUILD=$(BUILD) MODEL=$(MODEL) QUIET=$(QUIET) HOST_CSS=g++ HOST_DMD=$(BOOTSTRAP_DMD) -j$(NCPU) all
-	$(MAKE) -C master/dmd -f posix.mak BUILD=$(BUILD) MODEL=release QUIET=$(QUIET) HOST_CSS=g++ HOST_DMD=$(BOOTSTRAP_DMD) INSTALL_DIR=$(INSTALL_DIR) install
+	$(MAKE) -C master/dmd -f posix.mak BUILD=release MODEL=$(MODEL) QUIET=$(QUIET) HOST_CSS=g++ HOST_DMD=$(BOOTSTRAP_DMD) INSTALL_DIR=$(INSTALL_DIR) install
 	ln -s $(INSTALL_DIR)/dragonflybsd/bin64/dmd /usr/local/bin/dmd
 	ln -s $(INSTALL_DIR)/dragonflybsd/bin64/dmd.conf /usr/local/etc/dmd.conf
 	touch $@

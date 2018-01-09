@@ -13,10 +13,8 @@ if [[ $exit_code != 0 ]]; then
     exit $exit_code
 fi
 res=`tail -n1 output.log`
-exit_code="${res##*SSH_REMOTE_EXIT_CODE=}"
-if [[ ! -n "$exit_code" ]]; then
+exit_text_code="${res##*SSH_REMOTE_EXIT_CODE=}"
+if [[ ! -n "$exit_text_code" ]]; then
     exit_code=127
 fi
-if [[ ! "$exit_code" ]]; then
-	exit $exit_code
-fi
+exit $exit_code
