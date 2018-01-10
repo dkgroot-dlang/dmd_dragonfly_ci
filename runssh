@@ -20,4 +20,4 @@ else
     exit_code=127
 fi
 echo "Returning:$exit_code"
-exit $exit_code
+exit $((0 + exit_code))
