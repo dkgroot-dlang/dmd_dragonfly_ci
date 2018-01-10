@@ -99,4 +99,4 @@ build_dub: clone_dub build_dmd
 	touch $@
 
 run_dub_test: build_dub
-	cd master/dub; DUB=/usr/local/bin/dub DC=$(INSTALL_DIR)/dragonflybsd/bin64/dmd test/run-unittest.sh
+	cd master/dub; DUB=/usr/local/bin/dub DC=$(INSTALL_DIR)/dragonflybsd/bin64/dmd test/run-unittest.sh; exit 0
