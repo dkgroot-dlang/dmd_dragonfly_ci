@@ -13,7 +13,7 @@ if [[ $exit_code != 0 ]]; then
     exit $exit_code
 fi
 res=`tail -n1 output.log`
-if [ -n "`grep 'SSH_REMOTE_EXIT_CODE=' res`" ]; then
+if [ -n "`grep 'SSH_REMOTE_EXIT_CODE=' $res`" ]; then
 	exit_text_code="${res##*SSH_REMOTE_EXIT_CODE=}"
 	if [[ -n "$exit_text_code" ]]; then
 	    exit_code=$exit_text_code
