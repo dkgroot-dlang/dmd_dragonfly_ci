@@ -5,7 +5,7 @@
 - bootstrap dmd on dragonfly
   - using v2.068.1 branch for dmd
   - using dmd-cxx branch for druntime and phobos
-- publish bootstrap_dmd.tar.bz2
+#- publish bootstrap_dmd.tar.bz2
 - build dmd from master branch
 - build druntime from master branch
 - build phobos from master branch
