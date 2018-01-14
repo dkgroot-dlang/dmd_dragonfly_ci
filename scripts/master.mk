@@ -61,7 +61,7 @@ run_dmd_tests:
 	$(MAKE) -C master/dmd/test -f Makefile BUILD=release MODEL=$(MODEL) QUIET=$(QUIET) HOST_DMD=$(BOOTSTRAP_DMD) -j$(NCPU)
 
 run_dmd_runnable_tests:
-	$(MAKE) -C master/dmd/test -f Makefile BUILD=release MODEL=$(MODEL) QUIET=$(QUIET) HOST_DMD=$(BOOTSTRAP_DMD) -j$(NCPU) start_runnable_tests
+	$(MAKE) -C master/dmd/test -f Makefile BUILD=release MODEL=$(MODEL) QUIET=$(QUIET) HOST_DMD=$(BOOTSTRAP_DMD) -j8 start_runnable_tests
 
 run_dmd_compilable_tests:
 	$(MAKE) -C master/dmd/test -f Makefile BUILD=release MODEL=$(MODEL) QUIET=$(QUIET) HOST_DMD=$(BOOTSTRAP_DMD) -j$(NCPU) start_compilable_tests
