@@ -8,4 +8,4 @@
 
 trap 'echo -n SSH_REMOTE_EXIT_CODE=$?' INT TERM EXIT
 set -e
-$@
+/usr/bin/time -pl -- $@
