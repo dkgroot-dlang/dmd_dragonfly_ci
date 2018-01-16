@@ -90,7 +90,7 @@ build_tools: clone_tools
 	$(MAKE) -C master/tools -f posix.mak BUILD=debug MODEL=$(MODEL) QUIET=$(QUIET) -j$(NCPU)
 
 clone_dub:
-	$(GIT) -C master clone -b dragonflybsd-master https://github.com/dkgroot-dlang/dub.git
+	$(GIT) -C master clone https://github.com/dlang/dub.git
 	touch $@
 
 build_dub: clone_dub build_dmd
