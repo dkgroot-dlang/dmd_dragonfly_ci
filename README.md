@@ -15,6 +15,6 @@
 - run dmd integration tests
 - build tools
 - build dub
-- start testing dub
+- run dub tests
 
 #- publish master_dmd.tar.bz2
