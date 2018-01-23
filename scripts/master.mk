@@ -18,7 +18,7 @@ all: master_dmd.tar.bz2
 
 clone_master:
 	[ -d master ] || mkdir master
-	$(GIT) -C master clone -b dragonflybsd-master https://github.com/${GITUSER}/dmd.git
+	$(GIT) -C master clone https://github.com/dlang/dmd.git
 	$(GIT) -C master clone -b dragonflybsd-master https://github.com/${GITUSER}/druntime.git
 	cd master/druntime; $(GIT) checkout -b unittest;
 	cd master/druntime; $(GIT) pull origin dragonfly-core.sys.posix dragonfly-core.sys.dragonflybsd --commit -q --squash;
