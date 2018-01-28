@@ -10,6 +10,7 @@ MODEL:=64
 NCPU:=4
 BUILD_BASEDIR:=$(shell pwd)
 BOOTSTRAP_DMD:=$(shell pwd)/bootstrap/install/dragonflybsd/bin64/dmd
+MASTER_DMD:=$(shell pwd)/master/install/dragonflybsd/bin64/dmd
 INSTALL_DIR:=/usr/local/dmd
 
 .PHONY: all
@@ -18,8 +19,9 @@ all: master_dmd.tar.bz2
 
 clone_master:
 	[ -d master ] || mkdir master
-	$(GIT) -C master clone https://github.com/dlang/dmd.git
-	$(GIT) -C master clone -b dragonflybsd-master https://github.com/${GITUSER}/druntime.git
+	#$(GIT) -C master clone https://github.com/dlang/dmd.git
+	$(GIT) -C master clone https://github.com/$(GITUSER)/dmd.git
+	$(GIT) -C master clone -b dragonflybsd-master https://github.com/$(GITUSER)/druntime.git
 	cd master/druntime; $(GIT) checkout -b unittest;
 	cd master/druntime; $(GIT) pull origin dragonfly-core.sys.posix dragonfly-core.sys.dragonflybsd --commit -q --squash;
 	$(GIT) -C master clone https://github.com/dlang/phobos.git
@@ -54,20 +56,20 @@ test_phobos: build_phobos
 	$(MAKE) -C master/phobos -f posix.mak BUILD=$(BUILD) MODEL=$(MODEL) QUIET=$(QUIET) unittest
 
 test_dmd:
-	$(MAKE) -C master/dmd/src -f posix.mak BUILD=release MODEL=$(MODEL) QUIET=$(QUIET) HOST_DMD=$(BOOTSTRAP_DMD) -j$(NCPU) build-examples
-	$(MAKE) -C master/dmd/src -f posix.mak BUILD=release MODEL=$(MODEL) QUIET=$(QUIET) HOST_DMD=$(BOOTSTRAP_DMD) -j$(NCPU) unittest
+	$(MAKE) -C master/dmd/src -f posix.mak BUILD=release MODEL=$(MODEL) QUIET=$(QUIET) HOST_DMD=$(MASTER_DMD) -j$(NCPU) build-examples
+	$(MAKE) -C master/dmd/src -f posix.mak BUILD=release MODEL=$(MODEL) QUIET=$(QUIET) HOST_DMD=$(MASTER_DMD) -j$(NCPU) unittest
 
 run_dmd_tests:
-	$(MAKE) -C master/dmd/test -f Makefile BUILD=release MODEL=$(MODEL) QUIET=$(QUIET) HOST_DMD=$(BOOTSTRAP_DMD) -j$(NCPU)
+	$(MAKE) -C master/dmd/test -f Makefile BUILD=release MODEL=$(MODEL) QUIET=$(QUIET) HOST_DMD=$(MASTER_DMD) -j$(NCPU)
 
 run_dmd_runnable_tests:
-	$(MAKE) -C master/dmd/test -f Makefile BUILD=release MODEL=$(MODEL) QUIET=$(QUIET) HOST_DMD=$(BOOTSTRAP_DMD) -j8 start_runnable_tests
+	$(MAKE) -C master/dmd/test -f Makefile BUILD=release MODEL=$(MODEL) QUIET=$(QUIET) HOST_DMD=$(MASTER_DMD) -j8 start_runnable_tests
 
 run_dmd_compilable_tests:
-	$(MAKE) -C master/dmd/test -f Makefile BUILD=release MODEL=$(MODEL) QUIET=$(QUIET) HOST_DMD=$(BOOTSTRAP_DMD) -j$(NCPU) start_compilable_tests
+	$(MAKE) -C master/dmd/test -f Makefile BUILD=release MODEL=$(MODEL) QUIET=$(QUIET) HOST_DMD=$(MASTER_DMD) -j$(NCPU) start_compilable_tests
 
 run_dmd_fail_compilation_tests:
-	$(MAKE) -C master/dmd/test -f Makefile BUILD=release MODEL=$(MODEL) QUIET=$(QUIET) HOST_DMD=$(BOOTSTRAP_DMD) -j$(NCPU) start_fail_compilation_tests
+	$(MAKE) -C master/dmd/test -f Makefile BUILD=release MODEL=$(MODEL) QUIET=$(QUIET) HOST_DMD=$(MASTER_DMD) -j$(NCPU) start_fail_compilation_tests
 
 test_master: test_druntime test_phobos test_dmd run_dmd_tests
 
@@ -83,7 +85,7 @@ master: master_dmd.tar.bz2
 	[ -d master/install ] || $(MAKE) -f $(MAKEFILE) master_restore;
 
 clone_tools:
-	$(GIT) -C master clone https://github.com/${GITUSER}/tools.git
+	$(GIT) -C master clone https://github.com/$(GITUSER)/tools.git
 	touch $@
 
 build_tools: clone_tools
