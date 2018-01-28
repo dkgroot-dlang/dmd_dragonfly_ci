@@ -9,9 +9,9 @@ BUILD:=debug
 MODEL:=64
 NCPU:=4
 BUILD_BASEDIR:=$(shell pwd)
-BOOTSTRAP_DMD:=$(shell pwd)/bootstrap/install/dragonflybsd/bin64/dmd
-MASTER_DMD:=$(shell pwd)/master/install/dragonflybsd/bin64/dmd
 INSTALL_DIR:=/usr/local/dmd
+BOOTSTRAP_DMD:=$(shell pwd)/bootstrap/install/dragonflybsd/bin64/dmd
+MASTER_DMD:=$(INSTALL_DIR)/dragonflybsd/bin64/dmd
 
 .PHONY: all
 
