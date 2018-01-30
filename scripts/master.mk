@@ -53,7 +53,8 @@ test_druntime: build_druntime
 
 test_phobos: build_phobos
 	#$(MAKE) -C master/phobos -f posix.mak BUILD=$(BUILD) MODEL=$(MODEL) QUIET=$(QUIET) -j$(NCPU) unittest
-	$(MAKE) -C master/phobos -f posix.mak BUILD=$(BUILD) MODEL=$(MODEL) QUIET=$(QUIET) unittest
+	$(MAKE) -C master/phobos -f posix.mak BUILD=$(BUILD) MODEL=$(MODEL) QUIET=$(QUIET) -j$(NCPU) unittest
+	$(MAKE) -C master/phobos -f posix.mak BUILD=$(BUILD) MODEL=$(MODEL) QUIET=$(QUIET) -j$(NCPU) publictests
 
 test_dmd:
 	$(MAKE) -C master/dmd/src -f posix.mak BUILD=release MODEL=$(MODEL) QUIET=$(QUIET) HOST_DMD=$(MASTER_DMD) -j$(NCPU) build-examples
