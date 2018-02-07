@@ -52,7 +52,6 @@ test_druntime: build_druntime
 	sysctl kern.coredump=0; $(MAKE) -C master/druntime -f posix.mak BUILD=$(BUILD) MODEL=$(MODEL) QUIET=$(QUIET) -j$(NCPU) unittest
 
 test_phobos: build_phobos
-	#$(MAKE) -C master/phobos -f posix.mak BUILD=$(BUILD) MODEL=$(MODEL) QUIET=$(QUIET) -j$(NCPU) unittest
 	$(MAKE) -C master/phobos -f posix.mak BUILD=$(BUILD) MODEL=$(MODEL) QUIET=$(QUIET) unittest
 
 test_phobos_publictests: build_phobos build_dub
