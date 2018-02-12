@@ -3,7 +3,7 @@
 
 GIT:=/usr/local/bin/git
 CURL:=/usr/local/bin/curl
-GITUSER:=dkgroot
+GITUSER:=dlang
 QUIET:=
 BUILD:=debug
 MODEL:=64
@@ -19,12 +19,9 @@ all: master_dmd.tar.bz2
 
 clone_master:
 	[ -d master ] || mkdir master
-	$(GIT) -C master clone https://github.com/dlang/dmd.git
-	#$(GIT) -C master clone https://github.com/$(GITUSER)/dmd.git
-	$(GIT) -C master clone -b dragonflybsd-master https://github.com/$(GITUSER)/druntime.git
-	cd master/druntime; $(GIT) checkout -b unittest;
-	cd master/druntime; $(GIT) pull origin dragonfly-core.sys.posix dragonfly-core.sys.dragonflybsd --commit -q --squash;
-	$(GIT) -C master clone https://github.com/dlang/phobos.git
+	$(GIT) -C master clone https://github.com/$(GITUSER)/dmd.git
+	$(GIT) -C master clone https://github.com/$(GITUSER)/druntime.git
+	$(GIT) -C master clone https://github.com/$(GITUSER)/phobos.git
 	touch $@
 	
 build_dmd: clone_master
@@ -87,14 +84,14 @@ master: master_dmd.tar.bz2
 	[ -d master/install ] || $(MAKE) -f $(MAKEFILE) master_restore;
 
 clone_tools:
-	$(GIT) -C master clone https://github.com/$(GITUSER)/tools.git
+	$(GIT) -C master clone https://github.com/dkgroot/tools.git
 	touch $@
 
 build_tools: clone_tools
 	$(MAKE) -C master/tools -f posix.mak BUILD=debug MODEL=$(MODEL) QUIET=$(QUIET) -j$(NCPU)
 
 clone_dub:
-	$(GIT) -C master clone https://github.com/dlang/dub.git
+	$(GIT) -C master clone https://github.com/$(GITUSER)/dub.git
 	touch $@
 
 build_dub: clone_dub build_dmd
