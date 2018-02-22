@@ -25,12 +25,12 @@ build_dmd: clone_bootstrap
 	$(MAKE) -C bootstrap/dmd -f posix.mak DEBUG=1 BUILD=$(BUILD) MODEL=$(MODEL) QUIET=$(QUIET) HOST_CSS=g++ -j$(NCPU) INSTALL_DIR=$(INSTALL_DIR) install
 
 build_druntime: clone_bootstrap
-	$(MAKE) -C bootstrap/druntime -f posix.mak BUILD=$(BUILD) MODEL=$(MODEL) QUIET=$(QUIET) -j$(NCPU) 
-	$(MAKE) -C bootstrap/druntime -f posix.mak BUILD=$(BUILD) MODEL=$(MODEL) QUIET=$(QUIET) INSTALL_DIR=$(INSTALL_DIR) install
+	$(MAKE) -C bootstrap/druntime -f posix.mak DMD=../dmd/src/dmd BUILD=$(BUILD) MODEL=$(MODEL) QUIET=$(QUIET) -j$(NCPU) 
+	$(MAKE) -C bootstrap/druntime -f posix.mak DMD=../dmd/src/dmd BUILD=$(BUILD) MODEL=$(MODEL) QUIET=$(QUIET) INSTALL_DIR=$(INSTALL_DIR) install
 
 build_phobos: clone_bootstrap
-	$(MAKE) -C bootstrap/phobos -f posix.mak BUILD=$(BUILD) MODEL=$(MODEL) QUIET=$(QUIET) -j$(NCPU)
-	$(MAKE) -C bootstrap/phobos -f posix.mak BUILD=$(BUILD) MODEL=$(MODEL) QUIET=$(QUIET) INSTALL_DIR=$(INSTALL_DIR) install
+	$(MAKE) -C bootstrap/phobos -f posix.mak DMD=../dmd/src/dmd BUILD=$(BUILD) MODEL=$(MODEL) QUIET=$(QUIET) -j$(NCPU)
+	$(MAKE) -C bootstrap/phobos -f posix.mak DMD=../dmd/src/dmd BUILD=$(BUILD) MODEL=$(MODEL) QUIET=$(QUIET) INSTALL_DIR=$(INSTALL_DIR) install
 
 build_bootstrap: build_dmd build_druntime build_phobos
 
