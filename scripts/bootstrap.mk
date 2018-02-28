@@ -44,5 +44,4 @@ bootstrap_restore: bootstrap_dmd.tar.bz2
 
 bootstrap: bootstrap_dmd.tar.bz2
 	[ -d bootstrap/install ] || $(MAKE) -f $(MAKEFILE) bootstrap_restore;
-
 	
