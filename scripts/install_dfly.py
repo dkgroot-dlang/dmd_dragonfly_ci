@@ -3,18 +3,6 @@
 # Python Pexpect Script, to remote control the DragonFly OS Installation inside a VM via the serial console
 #
 # Created by: Diederik de Groot (2018)
-
-class FilteredLogFile(object):
-    def __init__(self, file):
-        self.file = file
-
-    def write(self, data):
-        out = data.replace("|", "").replace("/","").replace("-","").replace("\\","");
-        return self.file.write("%s\n" % (out))
-
-    def flush(self):
-        self.file.flush()
-
 import sys
 import pexpect
 import time
@@ -29,8 +17,7 @@ cmd += "-no-reboot "
 cmd += "-nographic "
 cmd += "-serial mon:stdio"
 print("Starting: ", cmd)
-df = pexpect.spawn(cmd, encoding='utf-8', timeout=1200)
-df.logfile = sys.stdout
+df = pexpect.spawn(cmd, encoding='utf-8', timeout=1200, logfile=sys.stdout)
 df.expect("Escape to loader prompt")
 df.expect("Booting in 8 seconds")
 #print("\nSending ESC 1b")
@@ -41,8 +28,7 @@ df.sendline("set kernel_options=-Ch")
 df.expect("OK")
 df.sendline("set console=comconsole")
 df.expect("OK")
-#df.logfile = null
-df.logfile = FilteredLogFile(sys.stdout)
+df.logfile = null
 df.sendline("boot")
 print("\n\nBooting DragonFlyBSD (Stand-By)...")
 df.expect("The DragonFly Project.")
