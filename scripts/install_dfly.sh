@@ -7,7 +7,7 @@
 # Created by: Diederik de Groot (2018)
 #set -uexo pipefail
 #set -ux
-set -eo pipefail
+set -e
 
 disk=da0
 rootdev=da0s1a
