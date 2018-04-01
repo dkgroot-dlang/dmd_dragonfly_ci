@@ -55,7 +55,6 @@ df.expect(">>> ")
 df.sendline("./install_dfly.sh")
 df.expect(">>> ")
 df.sendline("sync")
-#df.expect(">>> ")
 if df.isalive():
     df.sendline('halt')
     df.expect("The operating system has halted.")
