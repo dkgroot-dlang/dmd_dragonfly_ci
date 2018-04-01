@@ -9,7 +9,7 @@ class FilteredLogFile(object):
         self.file = file
 
     def write(self, data):
-        out = data.replace("|/-\\", ".");
+        out = data.replace("|", "").replace("\\", "").replace("-","").replace("/","");
         return self.file.write("%s\n" % (out))
 
     def flush(self):
@@ -33,6 +33,7 @@ df = pexpect.spawn(cmd, encoding='utf-8', timeout=1200)
 #df.logfile = sys.stdout
 df.logfile = FilteredLogFile(sys.stdout)
 df.expect("Escape to loader prompt")
+#df.logfile = null
 df.expect("Booting in 8 seconds")
 #print("\nSending ESC 1b")
 df.send("\x1b")	# send the esc key
@@ -43,6 +44,7 @@ df.expect("OK")
 df.sendline("set console=comconsole")
 df.expect("OK")
 df.sendline("boot")
+df.logfile = sys.stdout
 print("\n\nBooting DragonFlyBSD (Stand-By)...")
 df.expect("login:")
 df.sendline("root")
