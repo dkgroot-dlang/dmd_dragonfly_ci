@@ -13,9 +13,9 @@ class LogAdapter(object):
         self.logger = logger
     def write(self, data):
         #data = data.strip() # ignore leading/trailing whitespace
-        #for eol in ['\r\n\r\n', '\r\n', '\r\r', '\n\n']:
-        for eol in ['\r\n', '\n\n']:
-            data = re.sub('\%s$' % eol, '\n', data)
+        data = data.replace('\r\n','\n').replace('\r','\n').replace('\n\n', '\n');
+        #for eol in ['\r\n', '\n\n']:
+        #    data = re.sub('\%s$' % eol, '\n', data)
         if data:  # non-blank
            self.logger.write(data)
     def flush(self):
