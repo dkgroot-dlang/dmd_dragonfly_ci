@@ -13,11 +13,8 @@ class LogAdapter(object):
         self.logger = logger
     def write(self, data):
         data = data.strip() # ignore leading/trailing whitespace
-        #if data in ['', '\n', '\r', '\r\n', '\n\n']:
-        #   return # don't log empty lines
-        #for eol in ['\r\n', '\r', '\n']:
-        #   data = re.sub('\%s$' % eol, '', data)
-        for eol in ['\r\n\r\n', '\r\n', '\r\r', '\r', '\n\n']:
+        #for eol in ['\r\n\r\n', '\r\n', '\r\r', '\n\n']:
+        for eol in ['\r\n\r\n', '\r\n']:
             data = re.sub('\%s$' % eol, '\n', data)
         if data:  # non-blank
            self.logger.write(data)
