@@ -28,11 +28,11 @@ df.sendline("set kernel_options=-Ch")
 df.expect("OK")
 df.sendline("set console=comconsole")
 df.expect("OK")
-df.logfile = null
+df.logfile = None	# Suppress twirl ("|/\/") logging
 df.sendline("boot")
 print("\n\nBooting DragonFlyBSD (Stand-By)...")
 df.expect("The DragonFly Project.")
-df.logfile = sys.stdout
+df.logfile = sys.stdout # Reinstate logging
 df.expect("login:")
 df.sendline("root")
 time.sleep(1)
