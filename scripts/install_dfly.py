@@ -31,21 +31,21 @@ cmd += "-serial mon:stdio"
 print("Starting: ", cmd)
 df = pexpect.spawn(cmd, encoding='utf-8', timeout=1200)
 #df.logfile = sys.stdout
-df.logfile = FilteredLogFile(sys.stdout)
 df.expect("Escape to loader prompt")
-#df.logfile = null
 df.expect("Booting in 8 seconds")
 #print("\nSending ESC 1b")
 df.send("\x1b")	# send the esc key
 print("\nSent ESC")
+#df.logfile = null
+df.logfile = FilteredLogFile(sys.stdout)
 df.expect("OK")
 df.sendline("set kernel_options=-Ch")
 df.expect("OK")
 df.sendline("set console=comconsole")
 df.expect("OK")
 df.sendline("boot")
-df.logfile = sys.stdout
 print("\n\nBooting DragonFlyBSD (Stand-By)...")
+df.logfile = sys.stdout
 df.expect("login:")
 df.sendline("root")
 time.sleep(1)
