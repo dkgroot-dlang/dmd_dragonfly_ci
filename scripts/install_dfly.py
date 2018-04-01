@@ -9,7 +9,7 @@ class FilteredLogFile(object):
         self.file = file
 
     def write(self, data):
-        out = data.replace("|", "").replace("-","").replace("/","");
+        out = data.replace("|", "").replace("/","").replace("-","").replace("\\","");
         return self.file.write("%s\n" % (out))
 
     def flush(self):
@@ -36,21 +36,21 @@ df.expect("Booting in 8 seconds")
 #print("\nSending ESC 1b")
 df.send("\x1b")	# send the esc key
 print("\nSent ESC")
-#df.logfile = null
 df.expect("OK")
 df.sendline("set kernel_options=-Ch")
 df.expect("OK")
 df.sendline("set console=comconsole")
 df.expect("OK")
+#df.logfile = null
 df.logfile = FilteredLogFile(sys.stdout)
 df.sendline("boot")
 print("\n\nBooting DragonFlyBSD (Stand-By)...")
-df.expect("login:")
+df.expect("The DragonFly Project.")
 df.logfile = sys.stdout
+df.expect("login:")
 df.sendline("root")
 time.sleep(1)
 df.send('\r')
-#df.expect("#")
 df.sendline("sh")
 df.expect("#")
 df.sendline("export PS1='>>> '")
