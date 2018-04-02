@@ -12,11 +12,8 @@ class LogAdapter(object):
     def __init__(self, logger):
         self.logger = logger
     def write(self, data):
-        #data = data.strip() # ignore leading/trailing whitespace
         data = data.replace('\r\n','\n').replace('\r','\n').replace('\n\n', '\n');
-        #for eol in ['\r\n', '\n\n']:
-        #    data = re.sub('\%s$' % eol, '\n', data)
-        if data:  # non-blank
+        if data:  # only non-blank
            self.logger.write(data)
     def flush(self):
         pass 
@@ -36,8 +33,7 @@ logger=LogAdapter(sys.stdout);
 df = pexpect.spawn(cmd, encoding='utf-8', timeout=1200, logfile=logger)
 df.expect("Escape to loader prompt")
 df.expect("Booting in 8 seconds")
-#print("\nSending ESC 1b")
-df.send("\x1b")	# send the esc key
+df.send("\x1b")		# send the esc key
 print("\nSent ESC")
 df.expect("OK")
 df.sendline("set kernel_options=-Ch")
@@ -48,7 +44,7 @@ df.logfile = None	# Suppress twirl ("|/\/") logging
 df.sendline("boot")
 print("\n\nBooting DragonFlyBSD (Stand-By)...")
 df.expect("The DragonFly Project.")
-df.logfile = logger # Reinstate logging
+df.logfile = logger	# Reinstate logging
 df.expect("login:")
 df.sendline("root")
 time.sleep(1)
