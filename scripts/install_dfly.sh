@@ -201,11 +201,11 @@ curl -s https://raw.githubusercontent.com/dkgroot-dlang/dmd_dragonfly_ci/master/
 # Temporarily fixup ABI Setting
 # echo 'ABI="dragonfly:5.2:x86:64";' >> /mnt/usr/local/etc/pkg.conf
 cp /etc/resolv.conf /mnt/etc;
-chroot /mnt pkg upgrade -y
+#chroot /mnt pkg upgrade -y
 
 echo -e "\nInstalling packages:"
 echo "________________________________________________________________________"
-chroot /mnt pkg install -y gcc6 gmake bash gettext llvm38 clang38 cmake ninja libconfig sudo
+chroot /mnt pkg install -y gcc6 gmake bash gettext sudo
 
 echo -e "\nFinishing system:"
 echo "________________________________________________________________________"
