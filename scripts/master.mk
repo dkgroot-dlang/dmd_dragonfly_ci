@@ -20,7 +20,8 @@ all: master_dmd.tar.bz2
 clone_master:
 	[ -d master ] || mkdir master
 	$(GIT) -C master clone https://github.com/$(GITUSER)/dmd.git
-	$(GIT) -C master clone https://github.com/$(GITUSER)/druntime.git
+	#$(GIT) -C master clone https://github.com/$(GITUSER)/druntime.git
+	$(GIT) -C master clone -b fix_core_stdc_math https://github.com/dkgroot-dlang/druntime.git
 	$(GIT) -C master clone https://github.com/$(GITUSER)/phobos.git
 	touch $@
 	
