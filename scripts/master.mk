@@ -22,8 +22,8 @@ clone_master:
 	$(GIT) -C master clone https://github.com/$(GITUSER)/dmd.git
 	$(GIT) -C master clone https://github.com/$(GITUSER)/druntime.git
 	#$(GIT) -C master clone -b fix_core_stdc_math https://github.com/dkgroot-dlang/druntime.git
-	$(GIT) -C master clone https://github.com/$(GITUSER)/phobos.git
-	#$(GIT) -C master clone -b fix_stdio_could_not_close_pipe https://github.com/dkgroot-dlang/phobos.git
+	#$(GIT) -C master clone https://github.com/$(GITUSER)/phobos.git
+	$(GIT) -C master clone -b fix_stdio_could_not_close_pipe1 https://github.com/dkgroot-dlang/phobos.git
 	touch $@
 
 	
